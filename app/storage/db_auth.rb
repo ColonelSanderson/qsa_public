@@ -51,8 +51,9 @@ class DBAuth < BaseStorage
       result = {:errors => ['Invalid token']}
     else
       recovery_token_expiry = dbauth_match[:recovery_token_expiry]
-      minutes_diff = (DateTime.now - DateTime.strptime(recovery_token_expiry)) * 24 * 60
-      if minutes_diff > 5
+      # days difference
+      time_diff = DateTime.now - DateTime.strptime(recovery_token_expiry)
+      if time_diff > 1
         result = {:errors => ['This token has expired']}
       else
         result = {:status => 'updated'} if set_user_password(dbauth_match[:user_id], password)
